@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <!--/* TODO: allow drag-N-drop for tasks*/ -->
+
+    <meta charset="utf-8">
+    <title> HTML Kanban Board</title>
+    
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='KanbanStyle.css') }}">
+      <!-- To Place in a doc -->
+    <script>
+      function allowDrop(ev) {
+          ev.preventDefault();
+      }
+
+      function drag(ev) {
+          ev.dataTransfer.setData("text", ev.target.id);
+      }
+
+      function drop(ev) {
+          ev.preventDefault();
+          var data = ev.dataTransfer.getData("text");
+          ev.target.getData("value")
+          ev.target.appendChild(document.getElementById(data));
+          action="{{ url_for('update') }}" method="POST"
+      }
+    </script>
+
+
+  </head>
+  
+  <body>
+    <h1>Kanban Board For {{ current_user.username }}</h1>
+    <div class="right"><a href="{{ url_for('logout') }}">logout</a></div>
+
+    <div class="row">
+      <div class="col-container">
+        <div class="column" style="background-color:#aaa;" value="0">
+          <section>
+            <h2>To-Do</h2>
+
+            <ul>
+              {% for task in todos %}
+              <li id="{{ task.id }}" draggable="true"> {{ task.title }} </li>
+                <dt> {{ task.text }} 
+                  <a id="to_doing" name="to_doing" href="{{ url_for('doing', task_id=task.id) }}" value="{{ task.id }}">In-Progress</a>
+                  <a id="to_done" name="to_done" href="{{ url_for('done', task_id=task.id) }}" value="{{ task.id }}">Complete</a></li></dt>
+              {% endfor %}  
+            </ul>
+          </section>
+        </div>
+        
+        <div class="column" style="background-color:#bbb;" ondragover="allowDrop(event)" value="1">
+          <section>
+            <h2>Doing</h2>
+
+            <ul>
+              {% for task in doings %}
+              <li id="{{ task.id }}" draggable="true"s> {{ task.title }} </li>
+                <dt> {{ task.text }} 
+                
+                <a id="to_done" name="to_done" href="{{ url_for('done', task_id=task.id) }}" value="{{ task.id }}">Complete</a></dt>
+              {% endfor %} 
+            </ul>
+          </section>
+        </div>
+        
+        <div class="column" style="background-color:#ccc;" value="2">
+          <section>
+            <h2>Done</h2>
+
+            <ul>
+              {% for task in dones %}
+              <li id="{{ task.id }}" draggable="true"> {{ task.title }}
+                <a id="deletion" name="deletion" href="{{ url_for('delete_task', id=task.id) }}" value="{{ task.id }}">delete</a></li>
+                <dt> {{ task.text }} </dt>
+              {% endfor %} 
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+
+<section>
+  <form id="add_task" action="{{ url_for('add') }}" method="post">
+      <div>
+          <label for="task">Task:</label>
+          <input type="text" id="task" name="task_title"
+          value="new task">
+      </div>
+      <div>
+          <label for="label">label:</label>
+            <input id="label" type="radio" name="task_label" value="0" checked>To Do
+            <input id="label" type="radio" name="task_label" value="1">Doing
+            <input id="label" type="radio" name="task_label" value="2">Done
+      </div>
+      <div>
+          <label for="dscp">description:</label><br>
+          <textarea id="dscp" name="task_description"></textarea>
+      </div>
+      
+      <div class="button">
+        <button id="task_button" type="submit" value="Add Items">Add Task</button>
+      </div>
+
+  </form>
+</section>
+
+
+  <form id="update_task" action="{{ url_for('update') }}" method="POST">
+        <div>
+            <label for="selected_task">Task:</label>
+            <select id="selected_task" name="task_name">
+              {% for task in all_tasks %}
+                <option value="{{ task.id }}"> {{ task.title }} {{task.statusID}}</option>
+              {% endfor %} 
+            </select>
+        </div>
+
+        <div>
+            <label for="updating">Update:</label>
+            <select id="updating" name="update_value">
+              <option value="0">To Do</option>
+              <option value="1">Doing</option>
+              <option value="2">Done</option>
+            </select>
+        </div>
+        
+        <div class="btn-group">
+          <button id="update_button" type="submit" value="Update Task">Update Task</button>
+        </div>
+  </form>
+
+  </body>
+</html>

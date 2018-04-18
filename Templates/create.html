@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Create User Kanban</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='KanbanStyle.css') }}">
+</head>
+
+<body>
+	<h1> Welcome! </h1>
+
+	<section> please create your user for the Kanban Board
+		<br>
+		</section>
+	<div id="id01" class="modal">
+		<form class="modal-content animate" method="POST" action="{{ url_for('create_account') }}">
+			<div class="container">
+			    <label for="uname"><b>Username</b></label>
+			    	{{ form.username(size=20) }}
+			    
+			    <label for="psw"><b>Password</b></label>
+			    {{ form.password }}
+				{{ form.csrf_token }}
+
+				<br>
+				<button type="submit" value="Create">Create</button>
+				<br>
+				{{ error }}
+			</div>
+			<br>
+			<span>Existing User? <a href="{{ url_for('login') }}">Log in here</a></span>
+		</form>	
+	</div>
+
+	{% with messages = get_flashed_messages() %}
+  		{% if messages %}
+    		<ul class=flashes>
+	   		{% for message in messages %}
+	      		<li>{{ message }}</li>
+	    	{% endfor %}
+    		</ul>
+  		{% endif %}
+	{% endwith %}
+
+	
+
+</body>
+
+</html>

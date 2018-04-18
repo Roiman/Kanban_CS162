@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Login Kanban</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='KanbanStyle.css') }}">
+</head>
+
+<body>
+	{% if current_user.is_authenticated %}
+		Hi {{ current_user.username }}!
+		please continue to the Kanban Board
+	{% else %}
+	<div id="id01" class="modal">
+	  <form class="modal-content animate" method="POST" action="{{ url_for('login') }}">
+	    <div class="container">
+	      <label for="uname"><b>Username</b></label>
+	      {{ form.username }} 
+	      
+	      <label for="psw"><b>Password</b></label>
+	      {{ form.password }}
+	        
+	      <button type="submit">Login</button>
+	    </div>
+	    {{ error }}
+	      <span class="psw">Don't Have a User? <a href="{{ url_for('create_account') }}">Create one</a></span>
+
+	  </form>
+	</div>
+	{% endif %}
+
+<script>
+
+// placeholder for scripts
+</script>
+</body>
